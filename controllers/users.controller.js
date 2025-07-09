@@ -2,8 +2,29 @@ import createCrudHandlers from "../utils/crudFactory.js";
 import asyncWrapper from "../utils/asyncWrapper.js";
 
 const usersCrud = createCrudHandlers("users");
+const BASE_URL = process.env.BASE_URL || "http://localhost:3000/api";
 
-const getUser = asyncWrapper(async (req, res, next) => {
+const createUser = asyncWrapper(async (req, res, _) => {
+    const response = await fetch(`${BASE_URL}/auth/register`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            email: req.body.email,
+            password: req.body.password,
+            username: req.body.username,
+        }),
+    });
+    const result = await response.json();
+    const userId = result.data.registeredUser.id;
+    const { password, ...updates } = req.body;
+    const user = await usersCrud.update(userId, updates);
+    res.status(201).json({
+        status: "success",
+        data: { msg: "User created successfully.", user },
+    });
+});
+
+const getUser = asyncWrapper(async (req, res, _) => {
     res.status(200).json({
         status: "success",
         data: {
@@ -13,7 +34,7 @@ const getUser = asyncWrapper(async (req, res, next) => {
     });
 });
 
-const updateUser = asyncWrapper(async (req, res, next) => {
+const updateUser = asyncWrapper(async (req, res, _) => {
     const updatedUser = await usersCrud.update(req.user.id, req.body);
     res.status(200).json({
         status: "success",
@@ -24,7 +45,7 @@ const updateUser = asyncWrapper(async (req, res, next) => {
     });
 });
 
-const deleteUser = asyncWrapper(async (req, res, next) => {
+const deleteUser = asyncWrapper(async (req, res, _) => {
     await usersCrud.remove(req.user.id);
     res.status(200).json({
         status: "success",
@@ -32,7 +53,7 @@ const deleteUser = asyncWrapper(async (req, res, next) => {
     });
 });
 
-const getUserById = asyncWrapper(async (req, res, next) => {
+const getUserById = asyncWrapper(async (req, res, _) => {
     const user = await usersCrud.getOne(req.params.id);
     res.status(200).json({
         status: "success",
@@ -40,15 +61,16 @@ const getUserById = asyncWrapper(async (req, res, next) => {
     });
 });
 
-const getAllUsers = asyncWrapper(async (req, res, next) => {
-    const allUsers = await usersCrud.getAll();
+const getAllUsers = asyncWrapper(async (req, res, _) => {
+    const options = {};
+    const allUsers = await usersCrud.getAll(options);
     res.status(200).json({
         status: "success",
         data: { msg: "All users retrieved successfully.", users: allUsers },
     });
 });
 
-const updateUserById = asyncWrapper(async (req, res, next) => {
+const updateUserById = asyncWrapper(async (req, res, _) => {
     const updatedUser = await usersCrud.update(req.params.id, req.body);
     res.status(200).json({
         status: "success",
@@ -56,7 +78,7 @@ const updateUserById = asyncWrapper(async (req, res, next) => {
     });
 });
 
-const deleteUserById = asyncWrapper(async (req, res, next) => {
+const deleteUserById = asyncWrapper(async (req, res, _) => {
     await usersCrud.remove(req.params.id);
     res.status(200).json({
         status: "success",
@@ -65,6 +87,7 @@ const deleteUserById = asyncWrapper(async (req, res, next) => {
 });
 
 const usersController = {
+    createUser,
     getUser,
     updateUser,
     deleteUser,
