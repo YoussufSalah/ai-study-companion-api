@@ -96,33 +96,6 @@ const summarizePDF = asyncWrapper(async (req, res, next) => {
     });
 });
 
-// 📹 YouTube
-const summarizeYouTube = asyncWrapper(async (req, res, next) => {
-    const { id: fileId } = req.params;
-    const { id: userId } = req.user;
-    const { chunks, tokensNeeded } = req;
-
-    const summary = await summarizeTextChunks(chunks);
-
-    const record = await summariesCrud.create({
-        user_id: userId,
-        upload_id: fileId,
-        content_type: "youtube",
-        tokens_used: tokensNeeded,
-        created_at: new Date(),
-    });
-
-    const url = await uploadSummaryFile(record.id, summary);
-    await summariesCrud.update(record.id, { summary_url: url });
-
-    await deductTokens(userId, tokensNeeded);
-
-    res.status(200).json({
-        status: "success",
-        data: { summary_url: url, record_id: record.id },
-    });
-});
-
 // 📥 Get all summaries
 const getAllSummaries = asyncWrapper(async (req, res, next) => {
     const { data, error } = await supabase
@@ -147,6 +120,5 @@ const getAllSummaries = asyncWrapper(async (req, res, next) => {
 
 export default {
     summarizePDF,
-    summarizeYouTube,
     getAllSummaries,
 };

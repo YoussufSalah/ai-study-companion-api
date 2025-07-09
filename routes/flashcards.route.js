@@ -12,12 +12,6 @@ router.get(
     verifyTokensAndParse("flashcards"),
     flashcardsController.generateFlashcardsPDF
 );
-router.get(
-    "/youtube/:id",
-    protect,
-    verifyTokensAndParse("flashcards"),
-    flashcardsController.generateFlashcardsYouTube
-);
 
 router.get("/", protect, flashcardsController.getAllFlashcards);
 

@@ -4,8 +4,6 @@ import supabase from "../config/supabaseClient.js";
 import CreateError from "../utils/createError.js";
 import createCrudHandlers from "../utils/crudFactory.js";
 import asyncWrapper from "../utils/asyncWrapper.js";
-import { downloadCaptions } from "../utils/downloadCaptions.js";
-import { parseVttToText } from "../utils/parseVttToText.js";
 
 const uploadsCrud = createCrudHandlers("uploads");
 
@@ -59,38 +57,5 @@ const uploadPDF = asyncWrapper(async (req, res, next) => {
     });
 });
 
-const uploadYouTube = asyncWrapper(async (req, res, next) => {
-    const userId = req.user.id;
-    const vidUrl = req.body.url;
-
-    const match = vidUrl.match(/(?:v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
-    if (!match) return next(new CreateError("Invalid YouTube URL", 400));
-
-    const transcriptVtt = await downloadCaptions(vidUrl);
-    if (!transcriptVtt) {
-        return next(
-            new CreateError(
-                "This video doesn't have English auto-generated captions.",
-                400
-            )
-        );
-    }
-
-    const result = await uploadsCrud.create({
-        user_id: userId,
-        content_type: "youtube",
-        content_url: vidUrl,
-        uploaded_at: new Date(),
-    });
-
-    res.status(201).json({
-        status: "success",
-        data: {
-            msg: "YouTube video added successfully",
-            record: result,
-        },
-    });
-});
-
-const uploadsController = { uploadUtil, uploadPDF, uploadYouTube };
+const uploadsController = { uploadUtil, uploadPDF };
 export default uploadsController;

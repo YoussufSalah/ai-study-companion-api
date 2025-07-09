@@ -111,41 +111,6 @@ const generateFlashcardsPDF = asyncWrapper(async (req, res, next) => {
     });
 });
 
-// 📹 YouTube
-const generateFlashcardsYouTube = asyncWrapper(async (req, res, next) => {
-    const { id: fileId } = req.params;
-    const { id: userId } = req.user;
-    const { chunks, tokensNeeded } = req;
-    const { allFlashcards, failedChunks } =
-        await generateFlashcardsWithOpenRouter(chunks);
-    if (allFlashcards.length === 0) {
-        console.error(
-            "❌ No valid flashcards generated. Failed LLM outputs:",
-            failedChunks
-        );
-        return next(
-            new CreateError(
-                "Failed to generate valid flashcards from the provided content. Please try again or contact support.",
-                500
-            )
-        );
-    }
-    const url = await uploadFlashcardsFile(fileId, allFlashcards);
-    const record = await flashcardsCrud.create({
-        user_id: userId,
-        upload_id: fileId,
-        content_type: "youtube",
-        tokens_used: tokensNeeded,
-        flashcards_url: url,
-        created_at: new Date(),
-    });
-    await deductTokens(userId, tokensNeeded);
-    res.status(200).json({
-        status: "success",
-        data: { flashcards_url: url, record },
-    });
-});
-
 // 📥 Get all flashcards
 const getAllFlashcards = asyncWrapper(async (req, res, next) => {
     const { data, error } = await supabase
@@ -170,6 +135,5 @@ const getAllFlashcards = asyncWrapper(async (req, res, next) => {
 
 export default {
     generateFlashcardsPDF,
-    generateFlashcardsYouTube,
     getAllFlashcards,
 };

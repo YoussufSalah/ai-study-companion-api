@@ -3,8 +3,6 @@ import pdf from "pdf-parse";
 import supabase from "../config/supabaseClient.js";
 import CreateError from "../utils/createError.js";
 import { extractTextChunks } from "../utils/chunkText.js";
-import { downloadCaptions } from "../utils/downloadCaptions.js";
-import { parseVttToText } from "../utils/parseVttToText.js";
 import uploadsCrudFactory from "../utils/crudFactory.js";
 
 const uploadsCrud = uploadsCrudFactory("uploads");
@@ -33,10 +31,6 @@ const verifyTokensAndParse = (type = "summary") => {
                 });
                 const pdfData = await pdf(response.data);
                 rawText = pdfData.text;
-            } else if (file.content_type === "youtube") {
-                const vtt = await downloadCaptions(file.content_url);
-                if (!vtt) throw new Error("Failed to get captions");
-                rawText = parseVttToText(vtt);
             } else {
                 return next(new CreateError("Unsupported content type", 400));
             }

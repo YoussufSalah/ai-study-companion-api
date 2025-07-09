@@ -11,6 +11,5 @@ router.post(
     uploadsController.uploadUtil.single("pdf"),
     uploadsController.uploadPDF
 );
-router.post("/youtube", protect, uploadsController.uploadYouTube);
 
 export default router;

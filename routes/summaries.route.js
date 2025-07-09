@@ -12,12 +12,6 @@ router.get(
     verifyTokenAndParse("summary"),
     summariesController.summarizePDF
 );
-router.get(
-    "/youtube/:id",
-    protect,
-    verifyTokenAndParse("summary"),
-    summariesController.summarizeYouTube
-);
 
 router.get("/", protect, summariesController.getAllSummaries);
 
