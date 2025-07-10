@@ -30,7 +30,7 @@ const uploadPDF = asyncWrapper(async (req, res, next) => {
         .upload(filename, req.file.buffer, {
             contentType: "application/pdf",
             cacheControl: "3600",
-            upsert: false,
+            upsert: true,
         });
 
     if (error) return next(new CreateError("Failed to upload file", 500));
