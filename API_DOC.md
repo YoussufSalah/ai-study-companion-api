@@ -1117,6 +1117,70 @@ const createSubscription = async (subscriptionData, token) => {
 
 ---
 
+## 📝 Quiz Routes
+
+### Generate PDF Quiz
+
+**GET** `/quizzes/pdf/{id}`
+
+**Headers:** `Authorization: Bearer {token}`
+
+**Path Parameters:**
+
+-   `id` - ID of the uploaded PDF file
+
+**Response:**
+
+```json
+{
+    "status": "success",
+    "data": {
+        "quiz_url": "https://storage.supabase.co/quizzes/uuid.json.gz",
+        "record": {
+            "id": "uuid",
+            "user_id": "uuid",
+            "upload_id": "uuid",
+            "content_type": "pdf",
+            "tokens_used": 1800,
+            "quiz_url": "https://storage.supabase.co/quizzes/uuid.json.gz",
+            "topics": ["Topic 1", "Topic 2"],
+            "created_at": "2024-01-01T00:00:00.000Z"
+        }
+    }
+}
+```
+
+### Get All Quizzes
+
+**GET** `/quizzes/`
+
+**Headers:** `Authorization: Bearer {token}`
+
+**Response:**
+
+```json
+{
+    "status": "success",
+    "data": {
+        "msg": "Quizzes retrieved successfully.",
+        "PDFQuizzes": [
+            {
+                "id": "uuid",
+                "user_id": "uuid",
+                "upload_id": "uuid",
+                "content_type": "pdf",
+                "tokens_used": 1800,
+                "quiz_url": "https://storage.supabase.co/quizzes/uuid.json.gz",
+                "topics": ["Topic 1", "Topic 2"],
+                "created_at": "2024-01-01T00:00:00.000Z"
+            }
+        ]
+    }
+}
+```
+
+---
+
 ## 🚨 Important Notes
 
 1. **Authentication:** Always include the Bearer token in the Authorization header for protected routes
