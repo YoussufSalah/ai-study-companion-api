@@ -37,7 +37,10 @@ const uploadPDF = asyncWrapper(async (req, res, next) => {
             upsert: true,
         });
 
-    if (error) return next(new CreateError("Failed to upload file", 500));
+    if (error) {
+        console.error("🔥 Supabase Upload Error:", error);
+        return next(new CreateError("Failed to upload file", 500));
+    }
 
     const { data: urlData } = supabase.storage
         .from("pdfs")
