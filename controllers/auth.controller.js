@@ -6,7 +6,7 @@ import createCrudHandlers from "../utils/crudFactory.js";
 const usersCrud = createCrudHandlers("users");
 
 const registerUser = asyncWrapper(async (req, res, next) => {
-    const { email, password, username } = req.body;
+    const { email, password, username, fullName } = req.body;
 
     // Check if Supabase client is available
     if (!supabase) {
@@ -17,7 +17,11 @@ const registerUser = asyncWrapper(async (req, res, next) => {
         email,
         password,
         email_confirm: true,
-        user_metadata: { username },
+        user_metadata: {
+            username,
+            first_name: fullName.split(" ")[0],
+            last_name: fullName.split(" ")[1],
+        },
     });
 
     if (error) return next(new CreateError(error.message, 400));
