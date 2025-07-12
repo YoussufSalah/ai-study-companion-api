@@ -104,7 +104,7 @@ const generateQuizPDF = asyncWrapper(async (req, res, next) => {
     await deductTokens(userId, tokensNeeded);
     res.status(200).json({
         status: "success",
-        data: { quiz_url: url, record },
+        data: { record, quiz },
     });
 });
 

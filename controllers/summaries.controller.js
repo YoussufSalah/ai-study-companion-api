@@ -92,7 +92,7 @@ const summarizePDF = asyncWrapper(async (req, res, next) => {
 
     res.status(200).json({
         status: "success",
-        data: { summary_url: url, record_id: record.id },
+        data: { record, summary },
     });
 });
 

@@ -525,30 +525,16 @@ Handles Google OAuth callback and redirects with tokens.
 {
     "status": "success",
     "data": {
-        "summary_url": "https://storage.supabase.co/summaries/uuid.txt.gz",
-        "record_id": "uuid"
-    }
-}
-```
-
-### Generate YouTube Summary
-
-**GET** `/summarize/youtube/{id}`
-
-**Headers:** `Authorization: Bearer {token}`
-
-**Path Parameters:**
-
--   `id` - ID of the uploaded YouTube video
-
-**Response:**
-
-```json
-{
-    "status": "success",
-    "data": {
-        "summary_url": "https://storage.supabase.co/summaries/uuid.txt.gz",
-        "record_id": "uuid"
+        "record": {
+            "id": "uuid",
+            "user_id": "uuid",
+            "upload_id": "uuid",
+            "content_type": "pdf",
+            "summary_url": "https://storage.supabase.co/summaries/uuid-time.txt.gz",
+            "tokens_used": 1800,
+            "created_at": "2024-01-01T00:00:00.000Z"
+        },
+        "summary": "Summary Text"
     }
 }
 ```
@@ -612,7 +598,6 @@ Handles Google OAuth callback and redirects with tokens.
 {
     "status": "success",
     "data": {
-        "flashcards_url": "https://storage.supabase.co/flashcards/uuid.json.gz",
         "record": {
             "id": "uuid",
             "user_id": "uuid",
@@ -621,7 +606,15 @@ Handles Google OAuth callback and redirects with tokens.
             "tokens_used": 1800,
             "flashcards_url": "https://storage.supabase.co/flashcards/uuid.json.gz",
             "created_at": "2024-01-01T00:00:00.000Z"
-        }
+        },
+        "flashcards": [
+            {
+                "front": "",
+                "back": "",
+                "category": "",
+            },
+            ...
+        ],
     }
 }
 ```
@@ -1135,7 +1128,6 @@ const createSubscription = async (subscriptionData, token) => {
 {
     "status": "success",
     "data": {
-        "quiz_url": "https://storage.supabase.co/quizzes/uuid.json.gz",
         "record": {
             "id": "uuid",
             "user_id": "uuid",
@@ -1145,6 +1137,18 @@ const createSubscription = async (subscriptionData, token) => {
             "quiz_url": "https://storage.supabase.co/quizzes/uuid.json.gz",
             "topics": ["Topic 1", "Topic 2"],
             "created_at": "2024-01-01T00:00:00.000Z"
+        }
+        "quiz": {
+            "topics": ["Topic 1", "Topic 2", ...],
+            "questionsData": [
+                {
+                    "question": "...",
+                    "options": ["A", "B", "C", "D"],
+                    "correct": 0,
+                    "explanation": "..."
+                },
+                ...
+            ]
         }
     }
 }

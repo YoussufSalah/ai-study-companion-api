@@ -107,7 +107,7 @@ const generateFlashcardsPDF = asyncWrapper(async (req, res, next) => {
     await deductTokens(userId, tokensNeeded);
     res.status(200).json({
         status: "success",
-        data: { flashcards_url: url, record },
+        data: { record, flashcards: allFlashcards },
     });
 });
 
