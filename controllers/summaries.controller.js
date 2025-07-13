@@ -27,6 +27,7 @@ const uploadSummaryFile = async (recordId, summary) => {
     }
 
     const { data } = supabase.storage.from("summaries").getPublicUrl(path);
+    console.log("PDF Upload Data:", data);
     return data.publicUrl;
 };
 
@@ -86,13 +87,15 @@ const summarizePDF = asyncWrapper(async (req, res, next) => {
     });
 
     const url = await uploadSummaryFile(record.id, summary);
-    await summariesCrud.update(record.id, { summary_url: url });
+    const updatedRecord = await summariesCrud.update(record.id, {
+        summary_url: url,
+    });
 
     await deductTokens(userId, tokensNeeded);
 
     res.status(200).json({
         status: "success",
-        data: { record, summary },
+        data: { record: updatedRecord, summary },
     });
 });
 
