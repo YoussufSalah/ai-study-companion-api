@@ -98,10 +98,8 @@ const summarizePDF = asyncWrapper(async (req, res, next) => {
 
 // 📥 Get all summaries
 const getAllSummaries = asyncWrapper(async (req, res, next) => {
-    const { data, error } = await supabase
-        .from("summaries")
-        .select("*")
-        .eq("user_id", req.user.id);
+    const options = req.body.options;
+    const data = await summariesCrud.getAll(options);
 
     if (error) return next(new CreateError(error.message, 400));
 
