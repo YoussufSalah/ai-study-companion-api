@@ -20,10 +20,6 @@ const uploadUtil = multer({
 });
 
 const uploadPDF = asyncWrapper(async (req, res, next) => {
-    console.log("➡️ File received:", req.file);
-    console.log("➡️ User:", req.user);
-    console.log("➡️ Headers:", req.headers);
-
     const userId = req.user.id;
 
     if (!req.file) return next(new CreateError("No file uploaded", 400));
