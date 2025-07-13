@@ -19,8 +19,7 @@ const registerUser = asyncWrapper(async (req, res, next) => {
         email_confirm: true,
         user_metadata: {
             username,
-            first_name: fullName.split(" ")[0],
-            last_name: fullName.split(" ")[1],
+            full_name: fullName,
         },
     });
 
