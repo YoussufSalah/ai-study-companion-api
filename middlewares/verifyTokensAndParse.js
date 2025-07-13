@@ -7,7 +7,7 @@ import uploadsCrudFactory from "../utils/crudFactory.js";
 
 const uploadsCrud = uploadsCrudFactory("uploads");
 
-// type: 'summary' | 'flashcards' | 'mock'
+// type: 'summary' | 'flashcards' | 'quiz'
 const verifyTokensAndParse = (type = "summary") => {
     return async (req, res, next) => {
         const userId = req.user.id;
@@ -50,8 +50,8 @@ const verifyTokensAndParse = (type = "summary") => {
             case "flashcards":
                 tokensNeeded = chunks.length * 1800; // 1 chunk = 5 flashcards = same
                 break;
-            case "mock":
-                tokensNeeded = chunks.length * 2200; // let’s assume mock generation is more expensive
+            case "quiz":
+                tokensNeeded = chunks.length * 2200; // let’s assume quiz generation is more expensive
                 break;
             default:
                 return next(new CreateError("Unknown generation type", 400));
