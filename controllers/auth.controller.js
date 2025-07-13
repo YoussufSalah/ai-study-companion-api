@@ -24,7 +24,7 @@ const registerUser = asyncWrapper(async (req, res, next) => {
     });
 
     if (error) return next(new CreateError(error.message, 400));
-
+    console.log(data);
     res.status(201).json({
         status: "success",
         data: { registeredUser: data.user },
