@@ -63,15 +63,7 @@ const generateFlashcardsWithOpenRouter = async (textChunks) => {
         );
         const llmOutput = data.choices[0].message.content;
         const parsed = safeJsonArrayExtract(llmOutput);
-        if (parsed) {
-            allFlashcards.push(...parsed);
-        } else {
-            failedChunks.push(llmOutput);
-            console.warn(
-                "⚠️ Skipping malformed flashcards chunk. LLM output:",
-                llmOutput
-            );
-        }
+        allFlashcards.push(...parsed);
     }
     return { allFlashcards, failedChunks };
 };

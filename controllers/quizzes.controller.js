@@ -65,16 +65,7 @@ const generateQuizWithOpenRouter = async (textChunks) => {
             }
         }
     }
-    if (parsed && parsed.questionsData && Array.isArray(parsed.questionsData)) {
-        // Limit to 10-20 questions
-        if (parsed.questionsData.length > 20)
-            parsed.questionsData = parsed.questionsData.slice(0, 20);
-        if (parsed.questionsData.length < 10) return null;
-        return parsed;
-    } else {
-        console.warn("⚠️ Skipping malformed quiz. LLM output:", llmOutput);
-        return null;
-    }
+    return parsed;
 };
 
 // 📄 PDF
