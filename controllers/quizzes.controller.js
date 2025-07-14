@@ -70,6 +70,8 @@ const generateQuizWithOpenRouter = async (textChunks) => {
 
 // 📄 PDF
 const generateQuizPDF = asyncWrapper(async (req, res, next) => {
+    console.log("🔍 req.user:", req.user);
+
     const { id: fileId } = req.params;
     const { id: userId } = req.user;
     const { chunks, tokensNeeded } = req;
