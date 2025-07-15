@@ -9,8 +9,8 @@ const paymentsCRUD = createCrudHandlers("payments");
 const usersCRUD = createCrudHandlers("users");
 
 const paddleSuccessHandler = asyncWrapper(async (req, res, next) => {
-    const { userId, subscriptionTypeName, subscriptionPeriod, amountPaid } =
-        req.body;
+    const { subscriptionTypeName, subscriptionPeriod, amountPaid } = req.body;
+    const userId = req.user.id;
 
     // === [1] Validate required data ===
     if (
