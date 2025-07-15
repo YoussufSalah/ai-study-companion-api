@@ -1,7 +1,7 @@
 import supabase from "../config/supabaseClient.js";
 
 const createCrudHandlers = (table, user = {}) => ({
-    async getAll(options) {
+    async getAll(options = {}) {
         let query = supabase.from(table).select("*");
         if (user && user.id) query = query.eq("user_id", user.id);
 
