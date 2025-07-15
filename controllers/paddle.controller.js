@@ -9,7 +9,12 @@ const paymentsCRUD = createCrudHandlers("payments");
 const usersCRUD = createCrudHandlers("users");
 
 const paddleSuccessHandler = asyncWrapper(async (req, res, next) => {
-    const { subscriptionTypeName, subscriptionPeriod, amountPaid } = req.body;
+    const {
+        subscriptionTypeName,
+        subscriptionPeriod,
+        amountPaid,
+        paddlePaymentId,
+    } = req.body;
     const userId = req.user.id;
 
     // === [1] Validate required data ===
@@ -52,6 +57,7 @@ const paddleSuccessHandler = asyncWrapper(async (req, res, next) => {
     // === [5] Create payment record ===
     const paymentData = await paymentsCRUD.create({
         subscription_id: subscriptionId,
+        remote_payment_id: paddlePaymentId,
         payment_method: "paddle",
         payment_status: "paid",
         amount_paid: amountPaid,
