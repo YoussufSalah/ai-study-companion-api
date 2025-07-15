@@ -23,11 +23,16 @@ const registerUser = asyncWrapper(async (req, res, next) => {
         },
     });
 
+    const updatedUser = await usersCrud.update(data.user.id, {
+        first_name: fullName?.split(" ")[0],
+        last_name: fullName?.split(" ")[1],
+    });
+
     if (error) return next(new CreateError(error.message, 400));
     console.log(data);
     res.status(201).json({
         status: "success",
-        data: { registeredUser: data.user },
+        data: { registeredUser: updatedUser },
     });
 });
 
