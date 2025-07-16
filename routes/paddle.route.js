@@ -4,6 +4,6 @@ import protect from "../middlewares/authMiddleware.js";
 
 const router = express.Router();
 
-router.post("/paddle/success", protect, paddleController.paddleSuccessHandler);
+router.post("/success", protect, paddleController.paddleSuccessHandler);
 
 export default router;
