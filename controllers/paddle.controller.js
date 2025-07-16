@@ -9,12 +9,12 @@ const paymentsCRUD = createCrudHandlers("payments");
 const usersCRUD = createCrudHandlers("users");
 
 const successHandler = asyncWrapper(async (req, res, next) => {
-    const { event_type, data } = req.body;
-
-    const { custom_data, id: paddlePaymentId } = data;
-
-    const { subscriptionTypeName, subscriptionPeriod, amountPaid } =
-        custom_data;
+    const {
+        subscriptionTypeName,
+        subscriptionPeriod,
+        amountPaid,
+        paddlePaymentId,
+    } = req.body;
 
     const userId = req.user.id;
 
@@ -116,7 +116,6 @@ const webhookHandler = asyncWrapper(async (req, res, next) => {
         paddlePaymentId,
     };
 
-    // Call your success handler
     return successHandler(req, res, next);
 });
 
