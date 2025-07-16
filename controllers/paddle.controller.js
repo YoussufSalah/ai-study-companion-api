@@ -8,7 +8,7 @@ const subscriptionPaymentsCRUD = createCrudHandlers("subscription_payments");
 const paymentsCRUD = createCrudHandlers("payments");
 const usersCRUD = createCrudHandlers("users");
 
-const paddleSuccessHandler = asyncWrapper(async (req, res, next) => {
+const successHandler = asyncWrapper(async (req, res, next) => {
     const { event_type, data } = req.body;
 
     const { custom_data, id: paddlePaymentId } = data;
@@ -81,7 +81,7 @@ const paddleSuccessHandler = asyncWrapper(async (req, res, next) => {
     });
 });
 
-const paddleWebhookHandler = asyncWrapper(async (req, res, next) => {
+const webhookHandler = asyncWrapper(async (req, res, next) => {
     const { event_type, data } = req.body;
 
     if (event_type !== "transaction.completed") {
