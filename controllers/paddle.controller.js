@@ -90,7 +90,7 @@ const webhookHandler = asyncWrapper(async (req, res, next) => {
 
     const { id: paddlePaymentId, status, amount, customer_id } = data;
 
-    const customData = data?.items?.[0]?.custom_data;
+    const customData = data?.items?.[0]?.price?.custom_data;
 
     if (!customData) {
         return res
@@ -101,12 +101,7 @@ const webhookHandler = asyncWrapper(async (req, res, next) => {
     const { subscriptionTypeName, subscriptionPeriod, amountPaid, userId } =
         customData;
 
-    if (
-        !userId ||
-        !subscriptionTypeName ||
-        !subscriptionPeriod ||
-        !amountPaid
-    ) {
+    if (!subscriptionTypeName || !subscriptionPeriod || !amountPaid) {
         return res
             .status(400)
             .json({ success: false, message: "Missing required data" });
