@@ -4,6 +4,7 @@ import protect from "../middlewares/authMiddleware.js";
 
 const router = express.Router();
 
-router.post("/success", protect, paddleController.paddleSuccessHandler);
+router.post("/success", protect, paddleController.successHandler);
+router.post("/webhook", paddleController.webhookHandler);
 
 export default router;

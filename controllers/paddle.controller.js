@@ -81,6 +81,49 @@ const paddleSuccessHandler = asyncWrapper(async (req, res, next) => {
     });
 });
 
+const paddleWebhookHandler = asyncWrapper(async (req, res, next) => {
+    const { event_type, data } = req.body;
+
+    if (event_type !== "transaction.completed") {
+        return res.status(200).send("Ignored non-transaction event");
+    }
+
+    const {
+        custom_data,
+        id: paddlePaymentId,
+        status,
+        amount,
+        customer_id,
+    } = data;
+
+    const { subscriptionTypeName, subscriptionPeriod, amountPaid, userId } =
+        custom_data;
+
+    if (
+        !userId ||
+        !subscriptionTypeName ||
+        !subscriptionPeriod ||
+        !amountPaid
+    ) {
+        return res
+            .status(400)
+            .json({ success: false, message: "Missing required data" });
+    }
+
+    // Simulate req.user so you can reuse the successHandler logic
+    req.user = { id: userId };
+    req.body = {
+        subscriptionTypeName,
+        subscriptionPeriod,
+        amountPaid,
+        paddlePaymentId,
+    };
+
+    // Call your success handler
+    return paddleController.paddleSuccessHandler(req, res, next);
+});
+
 export default {
-    paddleSuccessHandler,
+    successHandler,
+    webhookHandler,
 };
