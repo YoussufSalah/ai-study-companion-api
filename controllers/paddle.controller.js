@@ -117,7 +117,7 @@ const webhookHandler = asyncWrapper(async (req, res, next) => {
     };
 
     // Call your success handler
-    return paddleController.paddleSuccessHandler(req, res, next);
+    return successHandler(req, res, next);
 });
 
 export default {
