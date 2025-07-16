@@ -1,5 +1,5 @@
 import express from "express";
-import paddleController from "../controllers/paddleController.js";
+import paddleController from "../controllers/paddle.controller.js";
 import protect from "../middlewares/authMiddleware.js";
 
 const router = express.Router();
