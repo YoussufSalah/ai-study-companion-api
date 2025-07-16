@@ -88,16 +88,18 @@ const webhookHandler = asyncWrapper(async (req, res, next) => {
         return res.status(200).send("Ignored non-transaction event");
     }
 
-    const {
-        custom_data,
-        id: paddlePaymentId,
-        status,
-        amount,
-        customer_id,
-    } = data;
+    const { id: paddlePaymentId, status, amount, customer_id } = data;
+
+    const customData = data?.items?.[0]?.custom_data;
+
+    if (!customData) {
+        return res
+            .status(400)
+            .json({ success: false, message: "Missing custom data" });
+    }
 
     const { subscriptionTypeName, subscriptionPeriod, amountPaid, userId } =
-        custom_data;
+        customData;
 
     if (
         !userId ||
