@@ -9,12 +9,13 @@ const paymentsCRUD = createCrudHandlers("payments");
 const usersCRUD = createCrudHandlers("users");
 
 const paddleSuccessHandler = asyncWrapper(async (req, res, next) => {
-    const {
-        subscriptionTypeName,
-        subscriptionPeriod,
-        amountPaid,
-        paddlePaymentId,
-    } = req.body;
+    const { event_type, data } = req.body;
+
+    const { custom_data, id: paddlePaymentId } = data;
+
+    const { subscriptionTypeName, subscriptionPeriod, amountPaid } =
+        custom_data;
+
     const userId = req.user.id;
 
     // === [1] Validate required data ===
