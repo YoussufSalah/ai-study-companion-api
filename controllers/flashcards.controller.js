@@ -2,7 +2,6 @@ import axios from "axios";
 import zlib from "zlib";
 import supabase from "../config/supabaseClient.js";
 import asyncWrapper from "../utils/asyncWrapper.js";
-import CreateError from "../utils/createError.js";
 import createCrudHandlers from "../utils/crudFactory.js";
 import deductTokens from "../utils/deductTokens.js";
 import safeJsonArrayExtract from "../utils/safeJsonArrayExtract.js";
@@ -26,7 +25,7 @@ const uploadFlashcardsFile = async (recordId, flashcards) => {
 
     if (error) {
         console.error("❌ Flashcards upload error:", error.message, error);
-        throw new Error("Failed to upload flashcards file.");
+        return next(new Error("Failed to upload flashcards file."));
     }
 
     const { data } = supabase.storage.from("flashcards").getPublicUrl(path);
@@ -83,9 +82,8 @@ const generateFlashcardsPDF = asyncWrapper(async (req, res, next) => {
             failedChunks
         );
         return next(
-            new CreateError(
-                "Failed to generate valid flashcards from the provided content. Please try again or contact support.",
-                500
+            new Error(
+                "Failed to generate valid flashcards from the provided content. Please try again or contact support."
             )
         );
     }
@@ -110,7 +108,7 @@ const getAllFlashcards = asyncWrapper(async (req, res, next) => {
     const options = req.body?.options || {};
     const data = await flashcardsCrud.getAll(options);
 
-    if (error) return next(new CreateError(error.message, 400));
+    if (error) return next(error);
 
     const PDFFlashcards = data.filter((s) => s.content_type === "pdf");
     const youtubeFlashcards = data.filter((s) => s.content_type === "youtube");

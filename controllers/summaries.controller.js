@@ -1,7 +1,6 @@
 import axios from "axios";
 import zlib from "zlib";
 import asyncWrapper from "../utils/asyncWrapper.js";
-import CreateError from "../utils/createError.js";
 import createCrudHandlers from "../utils/crudFactory.js";
 import supabase from "../config/supabaseClient.js";
 import deductTokens from "../utils/deductTokens.js";
@@ -104,7 +103,7 @@ const getAllSummaries = asyncWrapper(async (req, res, next) => {
     const options = req.body?.options || {};
     const data = await summariesCrud.getAll(options);
 
-    if (error) return next(new CreateError(error.message, 400));
+    if (error) return next(error);
 
     const PDFSummaries = data.filter((s) => s.content_type === "pdf");
     const youtubeSummaries = data.filter((s) => s.content_type === "youtube");
