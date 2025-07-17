@@ -63,8 +63,6 @@ const createCrudHandlers = (table, user = {}) => ({
                                 403
                             );
                     }
-                } else {
-                    throw new CreateError("Invalid filter object", 400);
                 }
             }
             if (Array.isArray(filter)) {
