@@ -16,5 +16,6 @@ router.patch(
     protect,
     usersController.incrementStudyTime
 );
+router.get("/me/stats", protect, usersController.getStats);
 
 export default router;

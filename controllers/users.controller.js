@@ -2,6 +2,11 @@ import createCrudHandlers from "../utils/crudFactory.js";
 import asyncWrapper from "../utils/asyncWrapper.js";
 
 const usersCrud = createCrudHandlers("users");
+const subscriptionsCrud = createCrudHandlers("subscriptions");
+const subscriptionTypesCrud = createCrudHandlers("subscription_types");
+const summariesCrud = createCrudHandlers("summaries");
+const flashcardsCrud = createCrudHandlers("flashcards");
+const quizzesCrud = createCrudHandlers("quizzes");
 const BASE_URL = process.env.BASE_URL || "http://localhost:3000/api";
 
 const createUser = asyncWrapper(async (req, res, _) => {
@@ -105,6 +110,74 @@ const incrementStudyTime = asyncWrapper(async (req, res, _) => {
     });
 });
 
+const getStats = asyncWrapper(async (req, res, _) => {
+    const userId = req.user.id;
+
+    const user = await usersCrud.getOne(userId);
+    const {
+        username,
+        email,
+        subscription_id: subscriptionId,
+        study_time: totalStudyTime,
+        available_tokens: availableTokens,
+        current_streak: current,
+        best_streak: longest,
+        created_at: joinedAt,
+    } = user;
+    const formattedStudyTime = `${Math.floor(totalStudyTime / 60)}h ${parseInt(
+        totalStudyTime % 60
+    )}m`;
+    const availableCredits = Math.floor(availableTokens / 2000);
+
+    const subscription = await subscriptionsCrud.getOne(subscriptionId);
+    const { period: subscriptionPeriod, name: subscriptionName } =
+        await subscriptionTypesCrud.getOne(subscription.subscription_type_id);
+    const startedAt = new Date(subscription.created_at);
+    let expiresAt = new Date(subscription.created_at);
+    const now = new Date();
+    const isActive = expiresAt > now;
+
+    if (subscriptionPeriod === "monthly") {
+        expiresAt.setDate(expiresAt.getDate() + 30);
+    } else {
+        expiresAt.setDate(expiresAt.getDate() + 365);
+    }
+    const outputSubscription = {
+        name: subscriptionName,
+        startedAt: startedAt.toISOString(),
+        expiresAt: expiresAt.toISOString(),
+        period: subscriptionPeriod,
+        isActive,
+    };
+
+    const options = {
+        filter: [{ column: "user_id", op: "eq", value: userId }],
+    };
+    const usage = {
+        summariesGenerated: (await summariesCrud.getAll(options)).length,
+        flashcardsCreated: (await flashcardsCrud.getAll(options)).length,
+        quizzesTaken: (await quizzesCrud.getAll(options)).length,
+    };
+
+    const result = {
+        username,
+        email,
+        totalStudyTime,
+        formattedStudyTime,
+        availableTokens,
+        availableCredits,
+        subscription: outputSubscription,
+        usage,
+        streak: { current, longest },
+        joinedAt: joinedAt.toISOString(),
+    };
+
+    res.status(200).json({
+        status: "success",
+        data: { msg: "User stats retrieved successfully.", stats: result },
+    });
+});
+
 const usersController = {
     createUser,
     getUser,
@@ -115,5 +188,6 @@ const usersController = {
     updateUserById,
     deleteUserById,
     incrementStudyTime,
+    getStats,
 };
 export default usersController;
