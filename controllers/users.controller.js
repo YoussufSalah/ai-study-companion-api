@@ -100,8 +100,8 @@ const incrementStudyTime = asyncWrapper(async (req, res, _) => {
     });
 
     res.status(200).json({
-        message: "Study time updated",
-        studyTime: updated.study_time,
+        status: "success",
+        data: { message: "Study time updated", studyTime: updated.study_time },
     });
 });
 
