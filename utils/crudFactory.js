@@ -6,57 +6,72 @@ const createCrudHandlers = (table, user = {}) => ({
         let query = supabase.from(table).select("*");
         if (user && user.id) query = query.eq("user_id", user.id);
 
-        const { page, pageSize, limit, offset, orderBy, filter = {} } = options;
+        const {
+            page,
+            pageSize,
+            limit,
+            offset,
+            orderBy,
+            filter = {},
+        } = options || {};
 
-        if (page && pageSize) {
+        if (typeof page === "number" && typeof pageSize === "number") {
             const calculatedOffset = (page - 1) * pageSize;
             query = query.range(
                 calculatedOffset,
                 calculatedOffset + pageSize - 1
             );
-        } else if (limit) {
+        } else if (typeof limit === "number") {
             query = query.limit(limit);
-            if (offset) {
+            if (typeof offset === "number") {
                 query = query.range(offset, offset + limit - 1);
             }
-        } else if (offset) {
-            query = query.range(offset, Infinity);
+        } else if (typeof offset === "number") {
+            query = query.range(offset, offset + 9999);
         }
 
         if (orderBy) {
             if (Array.isArray(orderBy)) {
                 orderBy.forEach((order) => {
                     query = query.order(order.column, {
-                        ascending: order.ascending || true,
+                        ascending: order.ascending !== false,
                     });
                 });
             } else {
                 query = query.order(orderBy.column, {
-                    ascending: orderBy.ascending || true,
+                    ascending: orderBy.ascending !== false,
                 });
             }
         }
 
         if (filter) {
             function filterQuery(filter) {
-                if (filter.op && filter.column && filter.value) {
+                if (filter.op && filter.column && filter.value !== undefined) {
                     switch (filter.op) {
                         case "eq":
                             query = query.eq(filter.column, filter.value);
+                            break;
                         case "neq":
                             query = query.neq(filter.column, filter.value);
+                            break;
                         case "gt":
                             query = query.gt(filter.column, filter.value);
+                            break;
                         case "gte":
                             query = query.gte(filter.column, filter.value);
+                            break;
                         case "lt":
                             query = query.lt(filter.column, filter.value);
+                            break;
                         case "lte":
                             query = query.lte(filter.column, filter.value);
+                            break;
                         case "is":
                             query = query.is(filter.column, filter.value);
+                            break;
                         case "in":
                             query = query.in(filter.column, filter.value);
+                            break;
                         default:
                             throw new CreateError(
                                 "Invalid supabase operator.",
@@ -69,7 +84,11 @@ const createCrudHandlers = (table, user = {}) => ({
                 filter.forEach((f) => {
                     filterQuery(f);
                 });
-            } else {
+            } else if (
+                filter.op &&
+                filter.column &&
+                filter.value !== undefined
+            ) {
                 filterQuery(filter);
             }
         }
