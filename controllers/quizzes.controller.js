@@ -106,8 +106,6 @@ const getAllQuizzes = asyncWrapper(async (req, res, next) => {
     const options = req.body?.options || {};
     const data = await quizzesCrud.getAll(options);
 
-    if (error) return next(new CreateError(error.message, 400));
-
     const PDFQuizzes = data.filter((s) => s.content_type === "pdf");
 
     res.status(200).json({
