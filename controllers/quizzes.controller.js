@@ -2,6 +2,7 @@ import axios from "axios";
 import zlib from "zlib";
 import supabase from "../config/supabaseClient.js";
 import asyncWrapper from "../utils/asyncWrapper.js";
+import CreateError from "../utils/createError.js";
 import createCrudHandlers from "../utils/crudFactory.js";
 import deductTokens from "../utils/deductTokens.js";
 
@@ -77,8 +78,9 @@ const generateQuizPDF = asyncWrapper(async (req, res, next) => {
     const quiz = await generateQuizWithOpenRouter(chunks);
     if (!quiz) {
         return next(
-            new Error(
-                "Failed to generate a valid quiz from the provided content. Please try again or contact support."
+            new CreateError(
+                "Failed to generate a valid quiz from the provided content. Please try again or contact support.",
+                500
             )
         );
     }
@@ -104,7 +106,7 @@ const getAllQuizzes = asyncWrapper(async (req, res, next) => {
     const options = req.body?.options || {};
     const data = await quizzesCrud.getAll(options);
 
-    if (error) return next(error);
+    if (error) return next(new CreateError(error.message, 400));
 
     const PDFQuizzes = data.filter((s) => s.content_type === "pdf");
 

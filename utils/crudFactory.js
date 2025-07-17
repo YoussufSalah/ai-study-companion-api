@@ -1,4 +1,5 @@
 import supabase from "../config/supabaseClient.js";
+import CreateError from "./createError.js";
 
 const createCrudHandlers = (table, user = {}) => ({
     async getAll(options = {}) {
