@@ -11,5 +11,10 @@ router
     .get(protect, usersController.getUser)
     .patch(protect, usersController.updateUser)
     .delete(protect, usersController.deleteUser);
+router.patch(
+    "/me/increment-study-time",
+    protect,
+    usersController.incrementStudyTime
+);
 
 export default router;

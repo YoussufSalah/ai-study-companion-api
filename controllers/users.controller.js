@@ -86,6 +86,25 @@ const deleteUserById = asyncWrapper(async (req, res, _) => {
     });
 });
 
+const incrementStudyTime = asyncWrapper(async (req, res, _) => {
+    const userId = req.user.id;
+    const { minutes } = req.body;
+
+    if (!minutes || minutes <= 0) {
+        return res.status(400).json({ message: "Invalid study time" });
+    }
+
+    const user = await usersCrud.getById(userId);
+    const updated = await usersCrud.update(userId, {
+        study_time: user.study_time + minutes,
+    });
+
+    res.status(200).json({
+        message: "Study time updated",
+        studyTime: updated.study_time,
+    });
+});
+
 const usersController = {
     createUser,
     getUser,
@@ -95,5 +114,6 @@ const usersController = {
     getAllUsers,
     updateUserById,
     deleteUserById,
+    incrementStudyTime,
 };
 export default usersController;
