@@ -130,8 +130,8 @@ const getStats = asyncWrapper(async (req, res, _) => {
     const availableCredits = Math.floor(availableTokens / 2000);
 
     let outputSubscription = "User doesn't have any active subscription.";
-    const subscription = await subscriptionsCrud.getOne(subscriptionId);
-    if (subscription) {
+    if (subscriptionId) {
+        const subscription = await subscriptionsCrud.getOne(subscriptionId);
         const { period: subscriptionPeriod, name: subscriptionName } =
             await subscriptionTypesCrud.getOne(
                 subscription.subscription_type_id
@@ -148,8 +148,8 @@ const getStats = asyncWrapper(async (req, res, _) => {
         }
         outputSubscription = {
             name: subscriptionName,
-            startedAt: startedAt.toISOString(),
-            expiresAt: expiresAt.toISOString(),
+            startedAt,
+            expiresAt,
             period: subscriptionPeriod,
             isActive,
         };
@@ -174,7 +174,7 @@ const getStats = asyncWrapper(async (req, res, _) => {
         subscription: outputSubscription,
         usage,
         streak: { current, longest },
-        joinedAt: joinedAt.toISOString(),
+        joinedAt,
     };
 
     res.status(200).json({
