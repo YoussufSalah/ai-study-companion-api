@@ -1,8 +1,8 @@
 class CreateError extends Error {
-    super(msg, statusCode) {
-        this.message = msg || "Internal Server Error";
-        this.statusCode = statusCode || 500;
+    constructor(message, statusCode) {
+        super(message);
+        this.statusCode = statusCode;
+        Error.captureStackTrace(this, this.constructor);
     }
 }
-
 export default CreateError;
