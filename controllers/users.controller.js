@@ -129,26 +129,31 @@ const getStats = asyncWrapper(async (req, res, _) => {
     )}m`;
     const availableCredits = Math.floor(availableTokens / 2000);
 
+    let outputSubscription = "User doesn't have any active subscription.";
     const subscription = await subscriptionsCrud.getOne(subscriptionId);
-    const { period: subscriptionPeriod, name: subscriptionName } =
-        await subscriptionTypesCrud.getOne(subscription.subscription_type_id);
-    const startedAt = new Date(subscription.created_at);
-    let expiresAt = new Date(subscription.created_at);
-    const now = new Date();
-    const isActive = expiresAt > now;
+    if (subscription) {
+        const { period: subscriptionPeriod, name: subscriptionName } =
+            await subscriptionTypesCrud.getOne(
+                subscription.subscription_type_id
+            );
+        const startedAt = new Date(subscription.created_at);
+        let expiresAt = new Date(subscription.created_at);
+        const now = new Date();
+        const isActive = expiresAt > now;
 
-    if (subscriptionPeriod === "monthly") {
-        expiresAt.setDate(expiresAt.getDate() + 30);
-    } else {
-        expiresAt.setDate(expiresAt.getDate() + 365);
+        if (subscriptionPeriod === "monthly") {
+            expiresAt.setDate(expiresAt.getDate() + 30);
+        } else {
+            expiresAt.setDate(expiresAt.getDate() + 365);
+        }
+        outputSubscription = {
+            name: subscriptionName,
+            startedAt: startedAt.toISOString(),
+            expiresAt: expiresAt.toISOString(),
+            period: subscriptionPeriod,
+            isActive,
+        };
     }
-    const outputSubscription = {
-        name: subscriptionName,
-        startedAt: startedAt.toISOString(),
-        expiresAt: expiresAt.toISOString(),
-        period: subscriptionPeriod,
-        isActive,
-    };
 
     const options = {
         filter: [{ column: "user_id", op: "eq", value: userId }],
