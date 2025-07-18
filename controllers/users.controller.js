@@ -99,7 +99,7 @@ const incrementStudyTime = asyncWrapper(async (req, res, _) => {
         return res.status(400).json({ message: "Invalid study time" });
     }
 
-    const user = await usersCrud.getById(userId);
+    const user = await usersCrud.getOne(userId);
     const updated = await usersCrud.update(userId, {
         study_time: user.study_time + minutes,
     });
