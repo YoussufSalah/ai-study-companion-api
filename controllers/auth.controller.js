@@ -7,7 +7,6 @@ const usersCrud = createCrudHandlers("users");
 
 const registerUser = asyncWrapper(async (req, res, next) => {
     const { email, password, username, fullName } = req.body;
-
     // Check if Supabase client is available
     if (!supabase) {
         return next(new CreateError("Database connection not available", 500));
@@ -22,17 +21,20 @@ const registerUser = asyncWrapper(async (req, res, next) => {
             full_name: fullName,
         },
     });
-
-    const updatedUser = await usersCrud.update(data.user.id, {
-        first_name: fullName?.split(" ")[0],
-        last_name: fullName?.split(" ")[1],
-    });
-
     if (error) return next(new CreateError(error.message, 400));
-    console.log(data);
+
+    let user = data.user;
+    if (fullName) {
+        user = await usersCrud.update(data.user.id, {
+            first_name: fullName?.split(" ")[0],
+            last_name: fullName?.split(" ")[1],
+            username,
+        });
+    }
+
     res.status(201).json({
         status: "success",
-        data: { registeredUser: updatedUser },
+        data: { registeredUser: user },
     });
 });
 
