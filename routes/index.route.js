@@ -12,6 +12,7 @@ import paymentsRoutes from "./payments.route.js";
 import subscriptionsRoutes from "./subscriptions.route.js";
 import adminRoutes from "./admin.route.js";
 import paddleRoutes from "./paddle.route.js";
+import gumroadRoutes from "./gumroad.route.js";
 
 router.use("/auth/", authRoutes);
 router.use("/user/", usersRoutes);
@@ -23,5 +24,6 @@ router.use("/payment/", paymentsRoutes);
 router.use("/subscription/", subscriptionsRoutes);
 router.use("/admin/", adminRoutes);
 router.use("/paddle/", paddleRoutes);
+router.use("/gumroad/", gumroadRoutes);
 
 export default router;
