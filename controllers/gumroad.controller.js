@@ -10,10 +10,10 @@ const usersCRUD = createCrudHandlers("users");
 
 // 1. Define your product-to-subscription map
 const productIdToSubscriptionType = {
-    "RzZIxJaxifFre8dfqzKkWw==": { name: "starter", period: "monthly" },
-    "xilmFjXvSd0cFs5CEmlcEQ==": { name: "starter", period: "yearly" },
-    "_3Oc6uoU8Tcw3FU-TmmK9Q==": { name: "pro", period: "monthly" },
-    "SvRjf0LW-t2FqmWg-bcTWg==": { name: "pro", period: "yearly" },
+    "xvLCXTRhAiX4zWsFl6Wqxw==": { name: "starter", period: "monthly" },
+    "IzdrHDo1p7Z_lVdFOmKKPw==": { name: "starter", period: "yearly" },
+    "uOPj8zQjW1Sau0reaJcfYA==": { name: "pro", period: "monthly" },
+    "3WRJ2j0tFrc4zCLF4AWxfQ==": { name: "pro", period: "yearly" },
 };
 
 const ping = asyncWrapper(async (req, res, next) => {
