@@ -1,4 +1,4 @@
-import {Router} from express;
+import { Router } from "express";
 import gumroadController from "../controllers/gumroad.controller.js";
 
 const router = Router();
