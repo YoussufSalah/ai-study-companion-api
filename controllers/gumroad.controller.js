@@ -17,16 +17,7 @@ const productIdToSubscriptionType = {
 };
 
 const ping = asyncWrapper(async (req, res, next) => {
-    console.log(req.body); // temp
-    const {
-        email,
-        product_id,
-        sale_id,
-        price,
-        currency,
-        sale_timestamp,
-        test,
-    } = req.body;
+    const { email, product_id, sale_id, price, sale_timestamp } = req.body;
 
     // [1] Validate necessary fields
     if (!email || !product_id || !sale_id || !price) {
@@ -94,6 +85,11 @@ const ping = asyncWrapper(async (req, res, next) => {
     res.status(200).json({ status: "success", msg: "Subscription applied" });
 });
 
-const gumroadController = { ping };
+const testPing = asyncWrapper(async (req, res, next) => {
+    console.log(req.body);
+    res.status(200).json({ status: "success" });
+});
+
+const gumroadController = { ping, testPing };
 
 export default gumroadController;
