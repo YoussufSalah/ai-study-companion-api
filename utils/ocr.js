@@ -1,40 +1,37 @@
-import { createWorker } from "tesseract.js";
-import { getDocument } from "pdfjs-dist/legacy/build/pdf.js";
-import { createCanvas } from "canvas";
+// import { createWorker } from "tesseract.js";
+import { getDocument } from "pdfjs-dist/legacy/build/pdf.mjs";
 
-const loadPdfAsImageBuffers = async (pdfBuffer) => {
-    const pdf = await getDocument({ data: pdfBuffer }).promise;
-    const pages = [];
+const extractPdfTextSmartly = async (pdfBuffer) => {
+    const pdf = await getDocument({ data: new Uint8Array(pdfBuffer) }).promise;
+    let finalText = "";
 
+    // const worker = await createWorker();
+    // await worker.reinitialize("eng");
+
+    let negate = 0;
     for (let i = 1; i <= pdf.numPages; i++) {
         const page = await pdf.getPage(i);
-        const viewport = page.getViewport({ scale: 2.0 });
-        const canvas = createCanvas(viewport.width, viewport.height);
-        const context = canvas.getContext("2d");
+        const textContent = await page.getTextContent();
 
-        await page.render({ canvasContext: context, viewport }).promise;
-        const imageBuffer = canvas.toBuffer("image/jpeg");
-        pages.push(imageBuffer);
+        const pageText = textContent.items
+            .map((item) => item.str)
+            .join(" ")
+            .trim();
+
+        if (pageText && pageText.length > 20) {
+            finalText += pageText + "\n\n";
+        } else {
+            // Implement OCR
+            negate++;
+        }
     }
 
-    return pages;
+    // await worker.terminate();
+
+    return {
+        parsedText: finalText.trim(),
+        pageCount: pdf.numPages - negate,
+    };
 };
 
-const runOCRonImages = async (imageBuffers) => {
-    const worker = await createWorker();
-    await worker.load();
-    await worker.reinitialize("eng");
-
-    let allText = "";
-    for (const img of imageBuffers) {
-        const {
-            data: { text },
-        } = await worker.recognize(img);
-        allText += text + "\n";
-    }
-
-    await worker.terminate();
-    return allText;
-};
-
-export { loadPdfAsImageBuffers, runOCRonImages };
+export { extractPdfTextSmartly };
