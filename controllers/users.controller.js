@@ -138,14 +138,15 @@ const getStats = asyncWrapper(async (req, res, _) => {
             );
         const startedAt = new Date(subscription.created_at);
         let expiresAt = new Date(subscription.created_at);
-        const now = new Date();
-        const isActive = expiresAt > now;
 
         if (subscriptionPeriod === "monthly") {
             expiresAt.setDate(expiresAt.getDate() + 30);
         } else {
             expiresAt.setDate(expiresAt.getDate() + 365);
         }
+        const now = new Date();
+        const isActive = expiresAt > now;
+
         outputSubscription = {
             name: subscriptionName,
             startedAt,
