@@ -9,7 +9,7 @@ router.post(
     "/pdf",
     protect,
     uploadsController.uploadUtil.single("pdf"),
-    uploadsController.uploadPDF
+    uploadsController.parsePDF
 );
 
 export default router;

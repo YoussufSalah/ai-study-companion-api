@@ -7,12 +7,10 @@ import verifyTokensAndParse from "../middlewares/verifyTokensAndParse.js";
 import flashcardsController from "../controllers/flashcards.controller.js";
 
 router.get(
-    "/pdf/:id",
+    "/pdf/",
     protect,
     verifyTokensAndParse("flashcards"),
     flashcardsController.generateFlashcardsPDF
 );
-
-router.get("/", protect, flashcardsController.getAllFlashcards);
 
 export default router;

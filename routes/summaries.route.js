@@ -7,12 +7,10 @@ import verifyTokenAndParse from "../middlewares/verifyTokensAndParse.js";
 import summariesController from "../controllers/summaries.controller.js";
 
 router.get(
-    "/pdf/:id",
+    "/pdf/",
     protect,
     verifyTokenAndParse("summary"),
     summariesController.summarizePDF
 );
-
-router.get("/", protect, summariesController.getAllSummaries);
 
 export default router;

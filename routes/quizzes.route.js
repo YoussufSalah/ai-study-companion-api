@@ -7,12 +7,10 @@ import verifyTokensAndParse from "../middlewares/verifyTokensAndParse.js";
 import quizzesController from "../controllers/quizzes.controller.js";
 
 router.get(
-    "/pdf/:id",
+    "/pdf/",
     protect,
     verifyTokensAndParse("quiz"),
     quizzesController.generateQuizPDF
 );
-
-router.get("/", protect, quizzesController.getAllQuizzes);
 
 export default router;
