@@ -22,7 +22,7 @@ const parsePDF = asyncWrapper(async (req, res, next) => {
         status: "success",
         data: {
             parsedText: data.text,
-            tokensNeeded: parseInt(data.text.length / 2, 10),
+            tokensNeeded: parseInt(data.text.length / 1.25, 10),
         },
     });
 });
