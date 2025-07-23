@@ -4,9 +4,6 @@ import asyncWrapper from "../utils/asyncWrapper.js";
 const usersCrud = createCrudHandlers("users");
 const subscriptionsCrud = createCrudHandlers("subscriptions");
 const subscriptionTypesCrud = createCrudHandlers("subscription_types");
-const summariesCrud = createCrudHandlers("summaries");
-const flashcardsCrud = createCrudHandlers("flashcards");
-const quizzesCrud = createCrudHandlers("quizzes");
 const BASE_URL = process.env.BASE_URL || "http://localhost:3000/api";
 
 const createUser = asyncWrapper(async (req, res, _) => {
@@ -123,6 +120,9 @@ const getStats = asyncWrapper(async (req, res, _) => {
         current_streak: current,
         best_streak: longest,
         created_at: joinedAt,
+        summaries,
+        flashcards,
+        quizzes,
     } = user;
     const formattedStudyTime = `${Math.floor(totalStudyTime / 60)}h ${parseInt(
         totalStudyTime % 60
@@ -160,9 +160,9 @@ const getStats = asyncWrapper(async (req, res, _) => {
         filter: [{ column: "user_id", op: "eq", value: userId }],
     };
     const usage = {
-        summariesGenerated: (await summariesCrud.getAll(options)).length,
-        flashcardsCreated: (await flashcardsCrud.getAll(options)).length,
-        quizzesTaken: (await quizzesCrud.getAll(options)).length,
+        summariesGenerated: summaries,
+        flashcardsCreated: flashcards,
+        quizzesTaken: quizzes,
     };
 
     const result = {

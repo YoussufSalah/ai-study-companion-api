@@ -1,13 +1,7 @@
 import multer from "multer";
-import zlib from "zlib";
-import supabase from "../config/supabaseClient.js";
 import CreateError from "../utils/createError.js";
-import createCrudHandlers from "../utils/crudFactory.js";
 import asyncWrapper from "../utils/asyncWrapper.js";
-import { extractPdfTextSmartly } from "../utils/ocr.js";
-
-const uploadsCrud = createCrudHandlers("uploads");
-
+import pdf from "pdf-parse-debugging-disabled";
 const storage = multer.memoryStorage();
 const fileFilter = (_, file, cb) => {
     if (file.mimetype === "application/pdf") cb(null, true);
@@ -23,16 +17,12 @@ const uploadUtil = multer({
 const parsePDF = asyncWrapper(async (req, res, next) => {
     if (!req.file) return next(new CreateError("No file uploaded", 400));
 
-    const { parsedText: text, pageCount } = await extractPdfTextSmartly(
-        req.file.buffer
-    );
-
+    const data = await pdf(req.file.buffer);
     res.status(201).json({
         status: "success",
         data: {
-            msg: "File processed successfully",
-            parsedText,
-            pageCount,
+            parsedText: data.text,
+            tokensNeeded: parseInt(data.text.length / 2, 10),
         },
     });
 });

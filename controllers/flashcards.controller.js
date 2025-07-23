@@ -3,7 +3,9 @@ import asyncWrapper from "../utils/asyncWrapper.js";
 import CreateError from "../utils/createError.js";
 import deductTokens from "../utils/deductTokens.js";
 import safeJsonArrayExtract from "../utils/safeJsonArrayExtract.js";
+import createCrudHandlers from "../utils/crudFactory.js";
 
+const usersCrud = createCrudHandlers("users");
 const TEMP_MODEL = "mistralai/mistral-7b-instruct-v0.3";
 const FLASHCARDS_MODEL = "google/gemini-2.5-flash-lite-preview-06-17";
 
@@ -41,7 +43,7 @@ const generateFlashcardsWithOpenRouter = async (rawText) => {
 
 // 📄 PDF
 const generateFlashcardsPDF = asyncWrapper(async (req, res, next) => {
-    const { id: userId } = req.user;
+    const { id: userId, flashcards } = req.user;
     const { rawText, tokensNeeded } = req;
     const { allFlashcards } = await generateFlashcardsWithOpenRouter(rawText);
     if (allFlashcards.length === 0) {
@@ -53,6 +55,7 @@ const generateFlashcardsPDF = asyncWrapper(async (req, res, next) => {
             )
         );
     }
+    const _ = await usersCrud.update(userId, { flashcards: flashcards + 1 });
     await deductTokens(userId, tokensNeeded);
     res.status(200).json({
         status: "success",

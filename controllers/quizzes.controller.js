@@ -2,7 +2,9 @@ import axios from "axios";
 import asyncWrapper from "../utils/asyncWrapper.js";
 import CreateError from "../utils/createError.js";
 import deductTokens from "../utils/deductTokens.js";
+import createCrudHandlers from "../utils/crudFactory.js";
 
+const usersCrud = createCrudHandlers("users");
 const QUIZ_MODEL = "mistralai/mistral-7b-instruct-v0.3";
 
 // Generate MCQ quiz from chunks
@@ -42,7 +44,7 @@ const generateQuizWithOpenRouter = async (fullText) => {
 
 // 📄 PDF
 const generateQuizPDF = asyncWrapper(async (req, res, next) => {
-    const { id: userId } = req.user;
+    const { id: userId, quizzes } = req.user;
     const { rawText, tokensNeeded } = req;
     const quiz = await generateQuizWithOpenRouter(rawText);
     if (!quiz) {
@@ -53,7 +55,7 @@ const generateQuizPDF = asyncWrapper(async (req, res, next) => {
             )
         );
     }
-
+    const _ = await usersCrud.update(userId, { quizzes: quizzes + 1 });
     await deductTokens(userId, tokensNeeded);
     res.status(200).json({
         status: "success",

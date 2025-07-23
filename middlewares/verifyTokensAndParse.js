@@ -1,17 +1,11 @@
 import supabase from "../config/supabaseClient.js";
 import CreateError from "../utils/createError.js";
-import { extractTextChunks } from "../utils/chunkText.js";
-import uploadsCrudFactory from "../utils/crudFactory.js";
-
-const uploadsCrud = uploadsCrudFactory("uploads");
 
 // type: 'summary' | 'flashcards' | 'quiz'
 const verifyTokensAndParse = (type = "summary") => {
     return async (req, res, next) => {
         const userId = req.user.id;
-        const { parsedText, pagesCount } = req.body;
-
-        const tokensNeeded = pagesCount * 2000;
+        const { parsedText, tokensNeeded } = req.body;
 
         const { data: user, error } = await supabase
             .from("users")
