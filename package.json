@@ -20,6 +20,7 @@
         "dotenv": "^16.6.1",
         "express": "^5.1.0",
         "http-server": "^14.1.1",
+        "jwt-decode": "^4.0.0",
         "multer": "^2.0.1",
         "openai": "^5.8.2",
         "pdf-parse": "^1.1.1",
