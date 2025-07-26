@@ -19,7 +19,6 @@ const protect = asyncWrapper(async (req, res, next) => {
         return next(new CreateError("User not found in local DB", 404));
 
     req.user = fullUser;
-    console.log(fullUser);
     next();
 });
 
