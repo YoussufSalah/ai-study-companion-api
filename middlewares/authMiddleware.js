@@ -5,7 +5,7 @@ import { jwtDecode } from "jwt-decode";
 
 const usersCrud = createCrudHandlers("users");
 
-const protect = asyncWrapper(async () => {
+const protect = asyncWrapper(async (req, res, next) => {
     const authHeader = req.headers.authorization;
     if (!authHeader?.startsWith("Bearer "))
         return next(new CreateError("No token provided", 401));
