@@ -51,6 +51,8 @@ const summarizePDF = asyncWrapper(async (req, res, next) => {
     await usersCrud.update(userId, { summaries: summaries + 1 });
     await deductTokens(userId, tokensNeeded);
 
+    console.log("From Summary Endpoint:\nRaw Text:", rawText);
+    console.log("Summary: \n", summary);
     res.status(200).json({
         status: "success",
         data: { summary },

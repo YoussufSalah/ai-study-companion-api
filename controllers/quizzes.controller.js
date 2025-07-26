@@ -55,8 +55,9 @@ const generateQuizPDF = asyncWrapper(async (req, res, next) => {
             )
         );
     }
-    const _ = await usersCrud.update(userId, { quizzes: quizzes + 1 });
+    await usersCrud.update(userId, { quizzes: quizzes + 1 });
     await deductTokens(userId, tokensNeeded);
+    console.log(quiz);
     res.status(200).json({
         status: "success",
         data: { quiz },

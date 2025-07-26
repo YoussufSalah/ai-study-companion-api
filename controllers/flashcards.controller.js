@@ -55,8 +55,9 @@ const generateFlashcardsPDF = asyncWrapper(async (req, res, next) => {
             )
         );
     }
-    const _ = await usersCrud.update(userId, { flashcards: flashcards + 1 });
+    await usersCrud.update(userId, { flashcards: flashcards + 1 });
     await deductTokens(userId, tokensNeeded);
+    console.log(allFlashcards);
     res.status(200).json({
         status: "success",
         data: { flashcards: allFlashcards },
